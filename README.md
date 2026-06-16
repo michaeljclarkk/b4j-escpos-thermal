@@ -16,7 +16,7 @@ Outputs `output\escposthermal.jar` and `output\escposthermal.b4xlib`.
 
 1. Copy `escposthermal.jar` and `escposthermal.xml` to your **B4J Additional Libraries** folder
 2. In the B4J IDE: right-click the **Libraries** tab → **Refresh**
-3. Check **USBThermalPrinter** in the Libraries Manager
+3. Check **escposthermal** in the Libraries Manager
 
 ## Usage
 
@@ -46,4 +46,4 @@ Sub AppStart
 End Sub
 ```
 
-For full API reference see [DOCUMENTATION.md](DOCUMENTATION.md).
+
