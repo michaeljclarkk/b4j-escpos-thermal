@@ -1,0 +1,17 @@
+# Build output
+build/
+output/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# B4J
+*.meta
+Objects/

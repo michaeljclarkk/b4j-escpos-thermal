@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <doclet-version-NOT-library-version>1.00</doclet-version-NOT-library-version>
+  <class>
+    <name>com.usbthermal.b4j.USBThermalPrinter</name>
+    <shortname>USBThermalPrinter</shortname>
+    <object>true</object>
+
+    <!-- ─── Constructor ─────────────────────────────────────── -->
+    <method>
+      <name>Initialize</name>
+      <comment>Initialize with a specific printer name.
+Use GetUsbPrinterNames() or GetAllPrinterNames() first to discover printers.
+Returns True if successful.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>PrinterName</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>InitializeDefault</name>
+      <comment>Initialize with the Windows default printer.
+Returns True if a default printer was found.</comment>
+      <returntype>boolean</returntype>
+    </method>
+
+    <method>
+      <name>IsInitialized</name>
+      <comment>Returns True if printer is initialized and ready.</comment>
+      <returntype>boolean</returntype>
+    </method>
+
+    <method>
+      <name>getCurrentPrinterName</name>
+      <comment>Returns the name of the currently configured printer.</comment>
+      <returntype>String</returntype>
+    </method>
+
+    <method>
+      <name>getLastError</name>
+      <comment>Returns the error message from the last failed operation.</comment>
+      <returntype>String</returntype>
+    </method>
+
+    <!-- ─── Printer Discovery (static) ──────────────────────── -->
+    <method>
+      <name>GetAllPrinterNames</name>
+      <comment>Get all installed printer names as a List of Strings.</comment>
+      <returntype>List</returntype>
+      <static>true</static>
+    </method>
+
+    <method>
+      <name>GetLocalPrinterNames</name>
+      <comment>Get local (non-networked) printer names as a List of Strings.</comment>
+      <returntype>List</returntype>
+      <static>true</static>
+    </method>
+
+    <method>
+      <name>GetUsbPrinterNames</name>
+      <comment>Get USB-connected printer names as a List of Strings.</comment>
+      <returntype>List</returntype>
+      <static>true</static>
+    </method>
+
+    <method>
+      <name>GetDefaultPrinterName</name>
+      <comment>Get the Windows default printer name.</comment>
+      <returntype>String</returntype>
+      <static>true</static>
+    </method>
+
+    <method>
+      <name>GetAllPrinterDetails</name>
+      <comment>Get detailed info for all printers.
+Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, isNetworked, isUsb, status.</comment>
+      <returntype>List</returntype>
+      <static>true</static>
+    </method>
+
+    <!-- ─── Simple Text Printing ────────────────────────────── -->
+    <method>
+      <name>PrintLine</name>
+      <comment>Print a single line of text (adds newline).</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Text</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>PrintText</name>
+      <comment>Print raw text (no newline added, caller provides line breaks).</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Text</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>PrintCenteredLine</name>
+      <comment>Print a centered line on 80mm paper.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Text</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>PrintSeparator</name>
+      <comment>Print a horizontal dashes separator line.</comment>
+      <returntype>boolean</returntype>
+    </method>
+
+    <method>
+      <name>PrintSeparatorChar</name>
+      <comment>Print a custom separator line using the given character repeated count times.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Character</name>
+        <type>char</type>
+      </parameter>
+      <parameter>
+        <name>Count</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <!-- ─── Job-based Printing ──────────────────────────────── -->
+    <method>
+      <name>BeginJob</name>
+      <comment>Begin a new print job buffer. Follow with formatting and Append* calls, then ExecuteJob.</comment>
+      <returntype>void</returntype>
+    </method>
+
+    <method>
+      <name>ExecuteJob</name>
+      <comment>Send the built job buffer to the printer. Returns True if sent successfully.</comment>
+      <returntype>boolean</returntype>
+    </method>
+
+    <method>
+      <name>AppendText</name>
+      <comment>Append text to the current job (no newline). Must call BeginJob first.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Text</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>AppendLine</name>
+      <comment>Append a line of text (with newline) to the current job. Must call BeginJob first.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Text</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>AppendCenteredLine</name>
+      <comment>Append a centered line to the current job. Must call BeginJob first.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Text</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <!-- ─── Text Formatting ─────────────────────────────────── -->
+    <method>
+      <name>SetBold</name>
+      <comment>Enable or disable bold text.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Enabled</name>
+        <type>boolean</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SetUnderline</name>
+      <comment>Enable or disable underline.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Enabled</name>
+        <type>boolean</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SetDoubleStrike</name>
+      <comment>Enable or disable double-strike mode.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Enabled</name>
+        <type>boolean</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SetReverseMode</name>
+      <comment>Enable or disable reverse (white-on-black) printing.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Enabled</name>
+        <type>boolean</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SetAlignmentLeft</name>
+      <comment>Set text alignment to left.</comment>
+      <returntype>void</returntype>
+    </method>
+
+    <method>
+      <name>SetAlignmentCenter</name>
+      <comment>Set text alignment to center.</comment>
+      <returntype>void</returntype>
+    </method>
+
+    <method>
+      <name>SetAlignmentRight</name>
+      <comment>Set text alignment to right.</comment>
+      <returntype>void</returntype>
+    </method>
+
+    <method>
+      <name>SetCharSize</name>
+      <comment>Set character size multipliers (1-8). First param=width, second=height.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Width</name>
+        <type>int</type>
+      </parameter>
+      <parameter>
+        <name>Height</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SetFont</name>
+      <comment>Set font: 0 = Font A (12x24, default), 1 = Font B (9x17, smaller).</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>FontIndex</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SetLineSpacing</name>
+      <comment>Set line spacing in dots (0-255). Default ~30.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Dots</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <!-- ─── Paper Control ───────────────────────────────────── -->
+    <method>
+      <name>FeedLines</name>
+      <comment>Feed paper by N lines using current line spacing. Returns True if sent.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Count</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>FeedDots</name>
+      <comment>Feed paper by N dots (precise). Returns True if sent.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>DotCount</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>CutPaperFull</name>
+      <comment>Full paper cut. Returns True if sent.</comment>
+      <returntype>boolean</returntype>
+    </method>
+
+    <method>
+      <name>CutPaperPartial</name>
+      <comment>Partial paper cut (one point left attached). Returns True if sent.</comment>
+      <returntype>boolean</returntype>
+    </method>
+
+    <method>
+      <name>CutPaper</name>
+      <comment>Cut with options: FullCut (boolean), FeedBeforeCut (int).</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>FullCut</name>
+        <type>boolean</type>
+      </parameter>
+      <parameter>
+        <name>FeedBeforeCut</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <!-- ─── Cash Drawer ─────────────────────────────────────── -->
+    <method>
+      <name>OpenCashDrawer</name>
+      <comment>Open cash drawer (standard ESC/POS, pin 2, 200ms). Returns True if sent.</comment>
+      <returntype>boolean</returntype>
+    </method>
+
+    <method>
+      <name>OpenCashDrawer</name>
+      <comment>Open cash drawer with manufacturer protocol: 0=Standard(Epson/Generic), 1=Citizen, 2=Star, 3=Sunmi/ProvaTech.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>DrawerType</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>OpenCashDrawerByKickCode</name>
+      <comment>Open cash drawer by manufacturer kick code. Maps: 1=Standard, 2=Citizen, 3=Star, 6=Sunmi.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>DrawerKickCode</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>PulseCashDrawer</name>
+      <comment>Pulse cash drawer: Pin (0=pin2, 1=pin5), OnTimeMs (1-8), OffTimeMs (1-8).</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Pin</name>
+        <type>int</type>
+      </parameter>
+      <parameter>
+        <name>OnTimeMs</name>
+        <type>int</type>
+      </parameter>
+      <parameter>
+        <name>OffTimeMs</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <!-- ─── Paper Width ─────────────────────────────────────── -->
+    <method>
+      <name>SetPaperWidth</name>
+      <comment>Set paper width in dots: 576=80mm, 544=76mm, 512=72mm, 384=56mm. Affects separator length and centering.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>PaperWidthDots</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SetPaperWidthByName</name>
+      <comment>Set paper width by name: "_80mm", "_76mm", "_72mm", "_56mm".</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>WidthName</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>GetCharsPerLine</name>
+      <comment>Get characters per line for current paper width (Font A, normal).</comment>
+      <returntype>int</returntype>
+    </method>
+
+    <!-- ─── Raw / Compatibility ────────────────────────────── -->
+    <method>
+      <name>SendRawBytes</name>
+      <comment>Send raw byte array directly to printer (no ESC/POS wrapping applied).</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>RawBytes</name>
+        <type>byte[]</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SendPrintString</name>
+      <comment>Send a pre-built ESC/POS string (UTF-8). Caller provides all ESC/POS formatting, text, and cut commands.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>PrintString</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SendPrintString</name>
+      <comment>Send pre-built ESC/POS string with encoding (UTF8/IBM437/ASCII).</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>PrintString</name>
+        <type>String</type>
+      </parameter>
+      <parameter>
+        <name>Encoding</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <!-- ─── Barcodes ────────────────────────────────────────── -->
+    <method>
+      <name>PrintBarcode</name>
+      <comment>Print a barcode.
+Use BarcodeType constants: 0=UPCA, 1=UPCE, 2=EAN13, 3=EAN8, 4=CODE39, 5=ITF,
+6=CODABAR, 72=CODE93, 73=CODE128.
+Height (dots, default 162), Width (2-6), HriPos (0=none, 1=above, 2=below, 3=both).</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Data</name>
+        <type>String</type>
+      </parameter>
+      <parameter>
+        <name>BarcodeType</name>
+        <type>int</type>
+      </parameter>
+      <parameter>
+        <name>Height</name>
+        <type>int</type>
+      </parameter>
+      <parameter>
+        <name>Width</name>
+        <type>int</type>
+      </parameter>
+      <parameter>
+        <name>HriPos</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>PrintBarcodeCode128</name>
+      <comment>Print a CODE128 barcode with sensible defaults.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Data</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>PrintBarcodeEan13</name>
+      <comment>Print an EAN13 barcode with sensible defaults.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Data</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <!-- ─── QR Code ─────────────────────────────────────────── -->
+    <method>
+      <name>PrintQRCode</name>
+      <comment>Print a QR code. ModuleSize 1-16 (typical 4-6).
+ErrorCorrectionLevel: 0=L(7%), 1=M(15%), 2=Q(25%), 3=H(30%).</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Data</name>
+        <type>String</type>
+      </parameter>
+      <parameter>
+        <name>ModuleSize</name>
+        <type>int</type>
+      </parameter>
+      <parameter>
+        <name>ErrorCorrectionLevel</name>
+        <type>int</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>PrintQRCodeSimple</name>
+      <comment>Print a QR code with default settings (size=4, M-level correction).</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>Data</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <!-- ─── Receipt Templates ───────────────────────────────── -->
+    <method>
+      <name>AppendReceiptHeader</name>
+      <comment>Append receipt header to current job: centered shop name, divider, timestamp.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>ShopName</name>
+        <type>String</type>
+      </parameter>
+      <parameter>
+        <name>ReceiptTitle</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>AppendReceiptLine</name>
+      <comment>Append a receipt line item: ItemName left, Price right-aligned.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>ItemName</name>
+        <type>String</type>
+      </parameter>
+      <parameter>
+        <name>Price</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>AppendReceiptFooter</name>
+      <comment>Append receipt footer: total, thankyou, cut. Call ExecuteJob after.</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>TotalAmount</name>
+        <type>String</type>
+      </parameter>
+      <parameter>
+        <name>ThankYouMessage</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>PrintFullReceipt</name>
+      <comment>Print a complete receipt in one call.
+Items is a 2D array: Array(Array(Name, Price), ...).
+Returns True if printed successfully.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>ShopName</name>
+        <type>String</type>
+      </parameter>
+      <parameter>
+        <name>ReceiptTitle</name>
+        <type>String</type>
+      </parameter>
+      <parameter>
+        <name>Items</name>
+        <type>String[][]</type>
+      </parameter>
+      <parameter>
+        <name>TotalAmount</name>
+        <type>String</type>
+      </parameter>
+      <parameter>
+        <name>ThankYouMessage</name>
+        <type>String</type>
+      </parameter>
+    </method>
+
+    <!-- ─── Diagnostic ──────────────────────────────────────── -->
+    <method>
+      <name>PrintTestPage</name>
+      <comment>Print a test page demonstrating all printer features.</comment>
+      <returntype>boolean</returntype>
+    </method>
+
+    <!-- ─── Configuration ───────────────────────────────────── -->
+    <method>
+      <name>SetAsyncPrinting</name>
+      <comment>Enable/disable async printing (default: false = synchronous).</comment>
+      <returntype>void</returntype>
+      <parameter>
+        <name>Async</name>
+        <type>boolean</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>getLastJobSuccess</name>
+      <comment>Returns True if the last print job completed successfully.</comment>
+      <returntype>boolean</returntype>
+    </method>
+
+    <!-- ─── Properties ──────────────────────────────────────── -->
+    <property>
+      <name>CurrentPrinterName</name>
+      <returntype>String</returntype>
+      <comment>Name of the currently configured printer (read-only).</comment>
+    </property>
+
+    <property>
+      <name>LastError</name>
+      <returntype>String</returntype>
+      <comment>Last error message string (read-only).</comment>
+    </property>
+
+    <property>
+      <name>AsyncPrinting</name>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>value</name>
+        <type>boolean</type>
+      </parameter>
+      <comment>Enable or disable asynchronous printing mode.</comment>
+    </property>
+  </class>
+</root>
