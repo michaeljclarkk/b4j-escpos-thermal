@@ -10,7 +10,7 @@ Requires JDK 11+ on PATH.
 .\build.ps1
 ```
 
-Outputs `output\escposthermal.jar` and `output\escposthermal.b4xlib`.
+Outputs `output\escposthermal.jar` and `output\escposthermal.xml`.
 
 ## Install in B4J
 

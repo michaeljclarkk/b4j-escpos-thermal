@@ -6,7 +6,7 @@
     <shortname>USBThermalPrinter</shortname>
     <object>true</object>
 
-    <!-- ─── Constructor ─────────────────────────────────────── -->
+    <!-- Constructor -->
     <method>
       <name>Initialize</name>
       <comment>Initialize with a specific printer name.
@@ -44,7 +44,7 @@ Returns True if a default printer was found.</comment>
       <returntype>String</returntype>
     </method>
 
-    <!-- ─── Printer Discovery (static) ──────────────────────── -->
+    <!-- Printer Discovery -->
     <method>
       <name>GetAllPrinterNames</name>
       <comment>Get all installed printer names as a List of Strings.</comment>
@@ -81,7 +81,7 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
       <static>true</static>
     </method>
 
-    <!-- ─── Simple Text Printing ────────────────────────────── -->
+    <!-- Simple Text Printing -->
     <method>
       <name>PrintLine</name>
       <comment>Print a single line of text (adds newline).</comment>
@@ -132,7 +132,7 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
       </parameter>
     </method>
 
-    <!-- ─── Job-based Printing ──────────────────────────────── -->
+    <!-- Job-based Printing -->
     <method>
       <name>BeginJob</name>
       <comment>Begin a new print job buffer. Follow with formatting and Append* calls, then ExecuteJob.</comment>
@@ -175,7 +175,7 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
       </parameter>
     </method>
 
-    <!-- ─── Text Formatting ─────────────────────────────────── -->
+    <!-- Text Formatting -->
     <method>
       <name>SetBold</name>
       <comment>Enable or disable bold text.</comment>
@@ -268,7 +268,7 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
       </parameter>
     </method>
 
-    <!-- ─── Paper Control ───────────────────────────────────── -->
+    <!-- Paper Control -->
     <method>
       <name>FeedLines</name>
       <comment>Feed paper by N lines using current line spacing. Returns True if sent.</comment>
@@ -315,21 +315,11 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
       </parameter>
     </method>
 
-    <!-- ─── Cash Drawer ─────────────────────────────────────── -->
+    <!-- Cash Drawer -->
     <method>
       <name>OpenCashDrawer</name>
       <comment>Open cash drawer (standard ESC/POS, pin 2, 200ms). Returns True if sent.</comment>
       <returntype>boolean</returntype>
-    </method>
-
-    <method>
-      <name>OpenCashDrawer</name>
-      <comment>Open cash drawer with manufacturer protocol: 0=Standard(Epson/Generic), 1=Citizen, 2=Star, 3=Sunmi/ProvaTech.</comment>
-      <returntype>boolean</returntype>
-      <parameter>
-        <name>DrawerType</name>
-        <type>int</type>
-      </parameter>
     </method>
 
     <method>
@@ -360,7 +350,7 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
       </parameter>
     </method>
 
-    <!-- ─── Paper Width ─────────────────────────────────────── -->
+    <!-- Paper Width -->
     <method>
       <name>SetPaperWidth</name>
       <comment>Set paper width in dots: 576=80mm, 544=76mm, 512=72mm, 384=56mm. Affects separator length and centering.</comment>
@@ -387,7 +377,7 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
       <returntype>int</returntype>
     </method>
 
-    <!-- ─── Raw / Compatibility ────────────────────────────── -->
+    <!-- Raw / Compatibility -->
     <method>
       <name>SendRawBytes</name>
       <comment>Send raw byte array directly to printer (no ESC/POS wrapping applied).</comment>
@@ -409,7 +399,7 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
     </method>
 
     <method>
-      <name>SendPrintString</name>
+      <name>SendPrintStringEncoded</name>
       <comment>Send pre-built ESC/POS string with encoding (UTF8/IBM437/ASCII).</comment>
       <returntype>boolean</returntype>
       <parameter>
@@ -422,7 +412,7 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
       </parameter>
     </method>
 
-    <!-- ─── Barcodes ────────────────────────────────────────── -->
+    <!-- Barcodes -->
     <method>
       <name>PrintBarcode</name>
       <comment>Print a barcode.
@@ -472,7 +462,7 @@ Height (dots, default 162), Width (2-6), HriPos (0=none, 1=above, 2=below, 3=bot
       </parameter>
     </method>
 
-    <!-- ─── QR Code ─────────────────────────────────────────── -->
+    <!-- QR Code -->
     <method>
       <name>PrintQRCode</name>
       <comment>Print a QR code. ModuleSize 1-16 (typical 4-6).
@@ -502,7 +492,7 @@ ErrorCorrectionLevel: 0=L(7%), 1=M(15%), 2=Q(25%), 3=H(30%).</comment>
       </parameter>
     </method>
 
-    <!-- ─── Receipt Templates ───────────────────────────────── -->
+    <!-- Receipt Templates -->
     <method>
       <name>AppendReceiptHeader</name>
       <comment>Append receipt header to current job: centered shop name, divider, timestamp.</comment>
@@ -573,14 +563,14 @@ Returns True if printed successfully.</comment>
       </parameter>
     </method>
 
-    <!-- ─── Diagnostic ──────────────────────────────────────── -->
+    <!-- Diagnostic -->
     <method>
       <name>PrintTestPage</name>
       <comment>Print a test page demonstrating all printer features.</comment>
       <returntype>boolean</returntype>
     </method>
 
-    <!-- ─── Configuration ───────────────────────────────────── -->
+    <!-- Configuration -->
     <method>
       <name>SetAsyncPrinting</name>
       <comment>Enable/disable async printing (default: false = synchronous).</comment>
@@ -597,7 +587,7 @@ Returns True if printed successfully.</comment>
       <returntype>boolean</returntype>
     </method>
 
-    <!-- ─── Properties ──────────────────────────────────────── -->
+    <!-- Properties -->
     <property>
       <name>CurrentPrinterName</name>
       <returntype>String</returntype>

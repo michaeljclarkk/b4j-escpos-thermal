@@ -61,7 +61,7 @@ public class USBThermalPrinter {
 
     /**
      * Initialize with a specific printer name.
-     * Use GetUsbPrinterNames() or GetAllPrinterNames() first to discover available printers.
+     * Use GetAllPrinterNames() first to discover available printers.
      *
      * @param printerName Exact printer name from the Windows printer list
      * @return true if the printer was found and initialized successfully
@@ -129,20 +129,6 @@ public class USBThermalPrinter {
      */
     public static List<String> getAllPrinterNames() {
         return PrinterDiscovery.getInstance().getAllPrinterNames();
-    }
-
-    /**
-     * Get all local (non-networked) printer names.
-     */
-    public static List<String> getLocalPrinterNames() {
-        return PrinterDiscovery.getInstance().getLocalPrinterNames();
-    }
-
-    /**
-     * Get USB-connected printer names only.
-     */
-    public static List<String> getUsbPrinterNames() {
-        return PrinterDiscovery.getInstance().getUsbPrinterNames();
     }
 
     /**
@@ -494,7 +480,7 @@ public class USBThermalPrinter {
      * @param encoding Character encoding name (e.g. "UTF8", "IBM437", "ASCII")
      * @return true if sent successfully
      */
-    public boolean sendPrintString(String printString, String encoding) {
+    public boolean sendPrintStringEncoded(String printString, String encoding) {
         checkInit();
         if (printString == null || printString.isEmpty()) return false;
         try {
@@ -741,6 +727,80 @@ public class USBThermalPrinter {
     public ESCPOSCommands getEscpos() {
         return escpos;
     }
+
+    // =====================================================================
+    //  B4X XML METHOD BRIDGES
+    // =====================================================================
+
+    public boolean Initialize(String printerName) { return initialize(printerName); }
+    public boolean InitializeDefault() { return initializeDefault(); }
+    public boolean IsInitialized() { return isInitialized(); }
+
+    public java.util.List<String> GetAllPrinterNames() { return getAllPrinterNames(); }
+    /** @deprecated Always returns all printer names (filtering removed). Use GetAllPrinterNames(). */
+    @Deprecated
+    public java.util.List<String> GetLocalPrinterNames() { return getAllPrinterNames(); }
+    /** @deprecated Always returns all printer names (filtering removed). Use GetAllPrinterNames(). */
+    @Deprecated
+    public java.util.List<String> GetUsbPrinterNames() { return getAllPrinterNames(); }
+    public String GetDefaultPrinterName() { return getDefaultPrinterName(); }
+    public java.util.List<java.util.Map<String, Object>> GetAllPrinterDetails() { return getAllPrinterDetails(); }
+
+    public boolean PrintLine(String text) { return printLine(text); }
+    public boolean PrintText(String text) { return printText(text); }
+    public boolean PrintCenteredLine(String text) { return printCenteredLine(text); }
+    public boolean PrintSeparator() { return printSeparator(); }
+    public boolean PrintSeparatorChar(char ch, int count) { return printSeparatorChar(ch, count); }
+
+    public void BeginJob() { beginJob(); }
+    public boolean ExecuteJob() { return executeJob(); }
+    public void AppendText(String text) { appendText(text); }
+    public void AppendLine(String text) { appendLine(text); }
+    public void AppendCenteredLine(String text) { appendCenteredLine(text); }
+
+    public void SetBold(boolean enabled) { setBold(enabled); }
+    public void SetUnderline(boolean enabled) { setUnderline(enabled); }
+    public void SetDoubleStrike(boolean enabled) { setDoubleStrike(enabled); }
+    public void SetReverseMode(boolean enabled) { setReverseMode(enabled); }
+    public void SetAlignmentLeft() { setAlignmentLeft(); }
+    public void SetAlignmentCenter() { setAlignmentCenter(); }
+    public void SetAlignmentRight() { setAlignmentRight(); }
+    public void SetCharSize(int width, int height) { setCharSize(width, height); }
+    public void SetFont(int fontIndex) { setFont(fontIndex); }
+    public void SetLineSpacing(int dots) { setLineSpacing(dots); }
+
+    public boolean FeedLines(int count) { return feedLines(count); }
+    public boolean FeedDots(int dotCount) { return feedDots(dotCount); }
+    public boolean CutPaperFull() { return cutPaperFull(); }
+    public boolean CutPaperPartial() { return cutPaperPartial(); }
+    public boolean CutPaper(boolean fullCut, int feedDotsBeforeCut) { return cutPaper(fullCut, feedDotsBeforeCut); }
+
+    public boolean OpenCashDrawer() { return openCashDrawer(); }
+    public boolean OpenCashDrawerByKickCode(int drawerKickCode) { return openCashDrawerByKickCode(drawerKickCode); }
+    public boolean PulseCashDrawer(int pin, int onTimeMs, int offTimeMs) { return pulseCashDrawer(pin, onTimeMs, offTimeMs); }
+
+    public void SetPaperWidth(int paperWidthDots) { setPaperWidth(paperWidthDots); }
+    public void SetPaperWidthByName(String widthName) { setPaperWidthByName(widthName); }
+    public int GetCharsPerLine() { return getCharsPerLine(); }
+
+    public boolean SendRawBytes(byte[] rawBytes) { return sendRawBytes(rawBytes); }
+    public boolean SendPrintString(String printString) { return sendPrintString(printString); }
+    public boolean SendPrintStringEncoded(String printString, String encoding) { return sendPrintStringEncoded(printString, encoding); }
+
+    public boolean PrintBarcode(String data, int barcodeType, int height, int width, int hriPosition) { return printBarcode(data, barcodeType, height, width, hriPosition); }
+    public boolean PrintBarcodeCode128(String data) { return printBarcodeCode128(data); }
+    public boolean PrintBarcodeEan13(String data) { return printBarcodeEan13(data); }
+    public boolean PrintQRCode(String data, int moduleSize, int errorCorrectionLevel) { return printQRCode(data, moduleSize, errorCorrectionLevel); }
+    public boolean PrintQRCodeSimple(String data) { return printQRCodeSimple(data); }
+
+    public void AppendReceiptHeader(String shopName, String receiptTitle) { appendReceiptHeader(shopName, receiptTitle); }
+    public void AppendReceiptLine(String itemName, String price) { appendReceiptLine(itemName, price); }
+    public void AppendReceiptFooter(String totalAmount, String thankYouMessage) { appendReceiptFooter(totalAmount, thankYouMessage); }
+    public boolean PrintFullReceipt(String shopName, String receiptTitle, String[][] items, String totalAmount, String thankYouMessage) {
+        return printFullReceipt(shopName, receiptTitle, items, totalAmount, thankYouMessage);
+    }
+    public boolean PrintTestPage() { return printTestPage(); }
+    public void SetAsyncPrinting(boolean async) { setAsyncPrinting(async); }
 
     // =====================================================================
     //  PRIVATE HELPERS

@@ -3,6 +3,11 @@ package com.usbthermal.b4j;
 /**
  * Immutable data container for printer information discovered
  * via the Windows print spooler / javax.print API.
+ *
+ * Note: isLocal/isNetworked/isUsb fields are informational best-effort
+ * heuristics based on the PrinterLocation attribute and may be inaccurate.
+ * They are not used to gate printing functionality — any PrintService from
+ * getAllPrinters() can be used with initialize(printerName).
  */
 public class PrinterInfo {
 
@@ -10,8 +15,8 @@ public class PrinterInfo {
     private final String location;       // e.g., "USB001", "LPT1:", "192.168.1.50"
     private final String driverName;
     private final boolean isDefault;
-    private final boolean isLocal;       // True if connected via USB/parallel/serial
-    private final boolean isNetworked;
+    private final boolean isLocal;       // Best-effort heuristic: True if USB/parallel/serial
+    private final boolean isNetworked;   // Best-effort heuristic: True if network printer
     private final boolean supportsColor;
     private final String status;         // Best-effort status string
 
@@ -39,10 +44,8 @@ public class PrinterInfo {
     public boolean supportsColor()  { return supportsColor; }
     public String getStatus()       { return status; }
 
-    /**
-     * Returns true if the printer appears to be a USB-connected local printer.
-     * Heuristic: local=true and location contains "USB" or "usb".
-     */
+    /** @deprecated Heuristic only — use location string directly instead. */
+    @Deprecated
     public boolean isUsbPrinter() {
         return isLocal && location.toUpperCase().contains("USB");
     }
@@ -57,7 +60,6 @@ public class PrinterInfo {
         if (!location.isEmpty()) sb.append(" @ ").append(location);
         sb.append(" [").append(driverName).append("]");
         if (isDefault) sb.append(" (Default)");
-        if (isUsbPrinter()) sb.append(" (USB)");
         return sb.toString();
     }
 

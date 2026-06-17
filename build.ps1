@@ -13,7 +13,7 @@ $ClassesDir = Join-Path $BuildDir "classes"
 $OutputDir = Join-Path $RootDir "output"
 $LibName = "escposthermal"
 $JarName = "$LibName.jar"
-$B4XLibName = "$LibName.b4xlib"
+$XmlName = "$LibName.xml"
 
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host " USBThermalPrinter B4J Library Builder" -ForegroundColor Cyan
@@ -110,59 +110,25 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "       JAR created: $JarPath" -ForegroundColor Green
 
-# ─── Package B4XLib ─────────────────────────────────────────────────
-Write-Host "`n[5/5] Packaging B4XLib..." -ForegroundColor Yellow
-
-# B4XLib structure:
-#   /manifest.txt
-#   /escposthermal.xml
-#   /escposthermal.jar
-#   /additional/   (optional, for dependency jars)
-
-$B4XLibPath = Join-Path $OutputDir $B4XLibName
-
-# Create manifest
-$Manifest = @"
-B4XLibrary=true
-Version=$LibraryVersion
-Type=Java
-Author=ESC/POS Thermal Library Team
-Description=ESC/POS Thermal Printer library for B4J. ESC/POS command support for 80mm receipt printers. Printer discovery, text formatting, barcodes, QR codes, cash drawer control, and receipt templates.
-Documentation=DOCUMENTATION.md
-DependsOn=
-"@
-
-# Create temp directory for ZIP structure
-$ZipStaging = Join-Path $BuildDir "zipstaging"
-New-Item -ItemType Directory -Force -Path $ZipStaging | Out-Null
-
-# Copy files
-$Manifest | Out-File -FilePath (Join-Path $ZipStaging "manifest.txt") -Encoding UTF8 -NoNewline
-Copy-Item (Join-Path $RootDir "$LibName.xml") (Join-Path $ZipStaging "$LibName.xml")
-Copy-Item $JarPath (Join-Path $ZipStaging $JarName)
-
-# Create the ZIP (B4XLib is just a ZIP)
-if (Test-Path $B4XLibPath) { Remove-Item $B4XLibPath }
-
-# Use .NET to create the ZIP
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::CreateFromDirectory($ZipStaging, $B4XLibPath)
-
-Write-Host "       B4XLib created: $B4XLibPath" -ForegroundColor Green
+# ─── Copy XML descriptor ────────────────────────────────────────────────
+Write-Host "`n[5/5] Copying B4J XML descriptor..." -ForegroundColor Yellow
+$XmlPath = Join-Path $OutputDir $XmlName
+Copy-Item (Join-Path $RootDir $XmlName) $XmlPath -Force
+Write-Host "       XML copied: $XmlPath" -ForegroundColor Green
 
 # ─── Summary ────────────────────────────────────────────────────────
 $JarSize = (Get-Item $JarPath).Length
-$B4XLibSize = (Get-Item $B4XLibPath).Length
+$XmlSize = (Get-Item $XmlPath).Length
 
 Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host " BUILD COMPLETE" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  Output directory: $OutputDir" -ForegroundColor White
-Write-Host "  JAR:     $JarName ($([math]::Round($JarSize/1KB, 2)) KB)" -ForegroundColor White
-Write-Host "  B4XLib:  $B4XLibName ($([math]::Round($B4XLibSize/1KB, 2)) KB)" -ForegroundColor White
+Write-Host "  JAR: $JarName ($([math]::Round($JarSize/1KB, 2)) KB)" -ForegroundColor White
+Write-Host "  XML: $XmlName ($([math]::Round($XmlSize/1KB, 2)) KB)" -ForegroundColor White
 Write-Host ""
 Write-Host "  To use in B4J:" -ForegroundColor Gray
-Write-Host "    1. Copy $B4XLibName to your B4J Additional Libraries folder" -ForegroundColor Gray
-Write-Host "    2. In B4J IDE: Project -> Add Existing Modules" -ForegroundColor Gray
-Write-Host "    3. Select the .b4xlib file" -ForegroundColor Gray
+Write-Host "    1. Copy $JarName and $XmlName to your B4J Additional Libraries folder" -ForegroundColor Gray
+Write-Host "    2. In B4J IDE: Libraries tab -> Refresh" -ForegroundColor Gray
+Write-Host "    3. Tick escposthermal in the libraries list" -ForegroundColor Gray
 Write-Host "========================================" -ForegroundColor Cyan

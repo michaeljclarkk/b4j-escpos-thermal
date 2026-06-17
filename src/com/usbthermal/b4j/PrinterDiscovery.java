@@ -19,7 +19,10 @@ import javax.print.attribute.standard.ColorSupported;
 
 /**
  * Discovers installed Windows printers via javax.print (Win32 print spooler).
- * Filters for local/USB printers suitable for thermal receipt printing.
+ * Returns all printers regardless of connection type — any PrintService from
+ * getAllPrinters() can print via USBThermalPrinter.initialize(printerName).
+ *
+ * Note: isLocal/isNetworked heuristics are best-effort and not gating.
  */
 public class PrinterDiscovery {
 
@@ -58,63 +61,11 @@ public class PrinterDiscovery {
     }
 
     /**
-     * Get only local (USB/parallel/serial) printers. Sorted: default printer first.
-     */
-    public List<PrinterInfo> getLocalPrinters() {
-        List<PrinterInfo> all = getAllPrinters();
-        List<PrinterInfo> local = new ArrayList<>();
-        for (PrinterInfo info : all) {
-            if (info.isLocal()) {
-                local.add(info);
-            }
-        }
-        sortDefaultFirst(local);
-        return local;
-    }
-
-    /**
-     * Get only USB-connected printers (heuristic: local + location contains "USB").
-     */
-    public List<PrinterInfo> getUsbPrinters() {
-        List<PrinterInfo> all = getAllPrinters();
-        List<PrinterInfo> usb = new ArrayList<>();
-        for (PrinterInfo info : all) {
-            if (info.isUsbPrinter()) {
-                usb.add(info);
-            }
-        }
-        sortDefaultFirst(usb);
-        return usb;
-    }
-
-    /**
      * Get a list of printer names only (simple string list for B4J).
      */
     public List<String> getAllPrinterNames() {
         List<String> names = new ArrayList<>();
         for (PrinterInfo info : getAllPrinters()) {
-            names.add(info.getPrinterName());
-        }
-        return names;
-    }
-
-    /**
-     * Get a list of local printer names only.
-     */
-    public List<String> getLocalPrinterNames() {
-        List<String> names = new ArrayList<>();
-        for (PrinterInfo info : getLocalPrinters()) {
-            names.add(info.getPrinterName());
-        }
-        return names;
-    }
-
-    /**
-     * Get a list of USB printer names only.
-     */
-    public List<String> getUsbPrinterNames() {
-        List<String> names = new ArrayList<>();
-        for (PrinterInfo info : getUsbPrinters()) {
             names.add(info.getPrinterName());
         }
         return names;
@@ -203,7 +154,8 @@ public class PrinterDiscovery {
         String driverModel = getAttrString(attrs, PrinterMakeAndModel.class, "");
         boolean isDefault = isServiceDefault(service);
 
-        // Determine connection type from location string
+        // Determine connection type from location string (best-effort heuristic only)
+        // Not used to gate printing — any printer from getAllPrinters() can print.
         String locUpper = location.toUpperCase();
         boolean isNetworked = locUpper.startsWith("\\\\") || locUpper.contains("IP_")
                            || locUpper.startsWith("HTTP") || locUpper.contains("NETWORK");
