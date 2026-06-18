@@ -412,6 +412,48 @@ Returns a List of Maps with keys: name, location, driver, isDefault, isLocal, is
       </parameter>
     </method>
 
+    <!-- Raster-to-PNG / PNG printing -->
+    <method>
+      <name>ConvertEscposRasterToPng</name>
+      <comment>Convert ESC/POS GS v 0 raster bitmap data (ImageParams + ImageData) into PNG bytes for Windows spooler printing.
+Returns Byte array (PNG), or Null on failure.</comment>
+      <returntype>[B</returntype>
+      <parameter>
+        <name>ImageParams</name>
+        <type>[B</type>
+      </parameter>
+      <parameter>
+        <name>ImageData</name>
+        <type>[B</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>SendPngToPrinter</name>
+      <comment>Send PNG bytes directly to the Windows print spooler. The driver handles halftoning at native resolution.
+Returns True if sent successfully.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>PngBytes</name>
+        <type>[B</type>
+      </parameter>
+    </method>
+
+    <method>
+      <name>PrintEscposRasterAsPng</name>
+      <comment>Convert ESC/POS raster to PNG and send directly to the printer in one call.
+Returns True if sent successfully.</comment>
+      <returntype>boolean</returntype>
+      <parameter>
+        <name>ImageParams</name>
+        <type>[B</type>
+      </parameter>
+      <parameter>
+        <name>ImageData</name>
+        <type>[B</type>
+      </parameter>
+    </method>
+
     <!-- Barcodes -->
     <method>
       <name>PrintBarcode</name>

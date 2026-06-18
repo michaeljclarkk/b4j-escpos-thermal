@@ -1,10 +1,13 @@
 package com.usbthermal.b4j;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -786,6 +789,18 @@ public class USBThermalPrinter {
     public boolean SendRawBytes(byte[] rawBytes) { return sendRawBytes(rawBytes); }
     public boolean SendPrintString(String printString) { return sendPrintString(printString); }
     public boolean SendPrintStringEncoded(String printString, String encoding) { return sendPrintStringEncoded(printString, encoding); }
+    public byte[] ConvertEscposRasterToPng(byte[] imageParams, byte[] imageData) { return convertEscposRasterToPng(imageParams, imageData); }
+    public boolean SendPngToPrinter(byte[] pngBytes) { return sendPngToPrinter(pngBytes); }
+
+    /**
+     * Convert ESC/POS raster data to PNG and send directly to the printer.
+     * Single-call convenience that avoids the B4J byte[]-param codegen issue.
+     */
+    public boolean PrintEscposRasterAsPng(byte[] imageParams, byte[] imageData) {
+        byte[] pngBytes = convertEscposRasterToPng(imageParams, imageData);
+        if (pngBytes == null) return false;
+        return sendPngToPrinter(pngBytes);
+    }
 
     public boolean PrintBarcode(String data, int barcodeType, int height, int width, int hriPosition) { return printBarcode(data, barcodeType, height, width, hriPosition); }
     public boolean PrintBarcodeCode128(String data) { return printBarcodeCode128(data); }
@@ -801,6 +816,75 @@ public class USBThermalPrinter {
     }
     public boolean PrintTestPage() { return printTestPage(); }
     public void SetAsyncPrinting(boolean async) { setAsyncPrinting(async); }
+
+    // =====================================================================
+    //  RASTER-TO-PNG CONVERSION
+    // =====================================================================
+
+    /**
+     * Convert ESC/POS GS v 0 raster bitmap data to PNG bytes for
+     * Windows spooler printing.  This lets the Windows printer driver
+     * handle halftoning at the printer's native resolution instead of
+     * mangling raw ESC/POS bytes.
+     *
+     * @param imageParams 5-byte param array from B4X CreatePrintImageData:
+     *                    [0]=mode, [1]=xL, [2]=xH, [3]=yL, [4]=yH
+     * @param imageData   Packed 1-bit raster (8 pixels per byte, MSB first)
+     * @return PNG-encoded byte array, or null on failure
+     */
+    public byte[] convertEscposRasterToPng(byte[] imageParams, byte[] imageData) {
+        try {
+            int bytesPerRow = (imageParams[1] & 0xFF) | ((imageParams[2] & 0xFF) << 8);
+            int widthPixels = bytesPerRow * 8;
+            int heightPixels = (imageParams[3] & 0xFF) | ((imageParams[4] & 0xFF) << 8);
+
+            BufferedImage img = new BufferedImage(widthPixels, heightPixels, BufferedImage.TYPE_BYTE_GRAY);
+            for (int y = 0; y < heightPixels; y++) {
+                for (int x = 0; x < widthPixels; x++) {
+                    int byteIdx = y * bytesPerRow + (x / 8);
+                    if (byteIdx >= imageData.length) break;
+                    int bitIdx = 7 - (x % 8);               // MSB = leftmost pixel
+                    int bit = (imageData[byteIdx] >> bitIdx) & 1;
+                    int pixel = (bit == 0) ? 255 : 0;       // 1=black (ESC/POS), 0=white → 0=black in gray
+                    int rgb = (pixel << 16) | (pixel << 8) | pixel;
+                    img.setRGB(x, y, rgb);
+                }
+            }
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(img, "PNG", baos);
+            return baos.toByteArray();
+        } catch (Exception e) {
+            lastJobError = "Raster-to-PNG conversion error: " + e.getMessage();
+            return null;
+        }
+    }
+
+    /**
+     * Send PNG bytes directly to the Windows print spooler.  The driver
+     * handles resolution, scaling, and halftoning in its native pipeline.
+     */
+    public boolean sendPngToPrinter(byte[] pngBytes) {
+        checkInit();
+        if (pngBytes == null || pngBytes.length == 0) {
+            lastJobError = "No PNG data to print";
+            return false;
+        }
+        try {
+            DocFlavor flavor = DocFlavor.INPUT_STREAM.PNG;
+            Doc doc = new SimpleDoc(new ByteArrayInputStream(pngBytes), flavor, null);
+            DocPrintJob job = printService.createPrintJob();
+            PrintRequestAttributeSet attrs = new HashPrintRequestAttributeSet();
+            job.print(doc, attrs);
+            lastJobSuccess = true;
+            lastJobError = "";
+            return true;
+        } catch (PrintException e) {
+            lastJobSuccess = false;
+            lastJobError = "PNG print error: " + e.getMessage();
+            return false;
+        }
+    }
 
     // =====================================================================
     //  PRIVATE HELPERS
